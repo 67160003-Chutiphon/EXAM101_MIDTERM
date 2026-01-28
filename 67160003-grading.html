@@ -157,7 +157,7 @@
     <!-- หัวข้อ (เรียบง่ายตามโจทย์) -->
     <div class="title">
       <h1>Student Grade System</h1>
-      <p>Fill the form, calculate grade, and history is saved in browser</p>
+      <p>ใส่ข้อมูลเพื่อคำนวณเกรด ระบบจะบันทึกประวัติไว้ให้ดูย้อนหลังได้</p>
     </div>
 
     <!-- ฟอร์มในกล่องเดียว (ตามโจทย์) -->
@@ -360,6 +360,31 @@
       // โหลดข้อมูลเก่าและแสดงในตาราง
       updateHistoryTable();
     });
+
+    //อันนี้สำหรับตรวจสอบ validateScore
+     console.log("=== Testing validateScore ===");
+    console.log("validateScore(85):", validateScore(85));
+    console.log("validateScore('85'):", validateScore("85"));
+    console.log("validateScore('abc'):", validateScore("abc"));
+    console.log("validateScore(-5):", validateScore(-5));
+    console.log("validateScore(105):", validateScore(105));
+    console.log("validateScore(''):", validateScore(""));
+
+    console.log("\n=== Testing calculateScore ===");
+    console.log("calculateScore(80, 90, 70):", calculateScore(80, 90, 70));
+    console.log("Expected: 82 (16 + 45 + 21)");
+
+    console.log("\n=== Testing getGrade ===");
+    console.log("getGrade(85):", getGrade(85));
+    console.log("getGrade(75):", getGrade(75));
+    console.log("getGrade(65):", getGrade(65));
+    console.log("getGrade(55):", getGrade(55));
+    console.log("getGrade(45):", getGrade(45));
+
+    console.log("\n=== Testing getStatus ===");
+    console.log("getStatus('A'):", getStatus("A"));
+    console.log("getStatus('F'):", getStatus("F"));
+
   </script>
 </body>
 </html>
