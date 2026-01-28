@@ -1,269 +1,365 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Student Grade System</title>
+  <meta charset="utf-8" />
+  <title>Student Grade System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ======= Layout หลัก ======= */
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      padding: 20px;
+    }
 
-<style>
-/* ---------- Layout หลัก ---------- */
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-width: 600px;
-  margin: auto;
-  font-family: Arial, sans-serif;
-}
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
-/* ---------- แถว input ---------- */
-.input-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    .title {
+      text-align: center;
+    }
 
-.input-row label {
-  width: 160px;
-}
+    .title h1 {
+      margin: 6px 0;
+      font-size: 22px;
+    }
 
-/* ---------- input ---------- */
-input {
-  width: 100%;
-  padding: 10px;
-  border: 2px solid #000;
-  border-radius: 5px;
-}
+    .title p {
+      margin: 0;
+      color: #666;
+      font-size: 13px;
+    }
 
-input:focus {
-  background-color: #f0f8ff;
-  border-color: #007bff;
-  outline: none;
-}
+    /* ======= กล่องฟอร์ม ======= */
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+    }
 
-/* ---------- ปุ่ม ---------- */
-.button-group {
-  display: flex;
-  justify-content: space-between;
-}
+    /* แถว label + input (ใช้ flex ตามโจทย์) */
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
 
-#btn-calculate {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-}
+    .row label {
+      width: 170px;           /* กำหนดความกว้างให้เท่ากัน */
+      font-weight: 600;
+    }
 
-#btn-clear {
-  background-color: #6c757d;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-}
+    .row input {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #000; /* ตามโจทย์ */
+      border-radius: 5px;
+      font-size: 14px;
+    }
 
-/* ---------- Result ---------- */
-#result-container {
-  display: none;
-  background-color: #e6ffe6;
-  border-left: 4px solid #006400;
-  padding: 15px;
-  border-radius: 8px;
-}
+    .row input:focus {
+      outline: none;
+      background-color: #ffffcc; /* เปลี่ยนสีเมื่อ focus ตามโจทย์ */
+      border-color: #0066ff;     /* เปลี่ยนขอบเมื่อ focus */
+    }
 
-/* ---------- Table ---------- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
+    /* ======= ปุ่ม ======= */
+    .btns {
+      display: flex;
+      justify-content: space-between; /* ตามโจทย์ */
+      gap: 12px;
+      margin-top: 6px;
+    }
 
-th, td {
-  border: 1px solid #000;
-  padding: 8px;
-  text-align: center;
-}
-</style>
+    #btn-calculate {
+      flex: 1;
+      background: #007bff; /* สีน้ำเงิน */
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #btn-clear {
+      width: 120px;
+      background: #6c757d; /* สีเทา */
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #btn-calculate:hover,
+    #btn-clear:hover {
+      opacity: 0.9;
+    }
+
+    /* ======= Result box ======= */
+    #result-container {
+      display: none; /* ซ่อนตั้งแต่เริ่ม ตามโจทย์ */
+      background: #fff9e6; /* พื้นหลังอ่อน (เหลือง) ตามโจทย์ */
+      border-left: 4px solid #ffaa00; /* border-left หนา */
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    /* ======= ตารางประวัติ ======= */
+    .history-title {
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f0f0f0;
+      font-weight: 700;
+    }
+
+    /* เล็กน้อยสำหรับมือถือ */
+    @media (max-width: 520px) {
+      .row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .row label {
+        width: auto;
+      }
+      #btn-clear {
+        width: 48%;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <!-- หัวข้อ (เรียบง่ายตามโจทย์) -->
+    <div class="title">
+      <h1>Student Grade System</h1>
+      <p>Fill the form, calculate grade, and history is saved in browser</p>
+    </div>
 
-<div class="container">
+    <!-- ฟอร์มในกล่องเดียว (ตามโจทย์) -->
+    <div class="card">
+      <!-- Input Fields (IDs ต้องตรงโจทย์) -->
+      <div class="row">
+        <label for="student-name">Student Name:</label>
+        <input id="student-name" type="text" />
+      </div>
 
-  <!-- Input Fields -->
-  <div class="input-row">
-    <label>Student Name:</label>
-    <input id="student-name" type="text">
+      <div class="row">
+        <label for="subject-name">Subject:</label>
+        <input id="subject-name" type="text" />
+      </div>
+
+      <div class="row">
+        <label for="midterm-score">Midterm (20%):</label>
+        <input id="midterm-score" type="text" />
+      </div>
+
+      <div class="row">
+        <label for="final-score">Final (50%):</label>
+        <input id="final-score" type="text" />
+      </div>
+
+      <div class="row">
+        <label for="assignment-score">Assignment (30%):</label>
+        <input id="assignment-score" type="text" />
+      </div>
+
+      <!-- Buttons ตามโจทย์ -->
+      <div class="btns">
+        <button id="btn-calculate">Calculate Grade</button>
+        <button id="btn-clear">Clear</button>
+      </div>
+    </div>
+
+    <!-- Result Section (hidden by default ตามโจทย์) -->
+    <div id="result-container" style="display: none;">
+      <p>Total Score: <span id="total-score">0</span></p>
+      <p>Final Grade: <span id="final-grade">-</span></p>
+      <p>Status: <span id="pass-status">-</span></p>
+    </div>
+
+    <!-- Grade History (ตารางที่ด้านล่างของเพจ) -->
+    <div>
+      <div class="history-title">Grade History</div>
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Total Score</th>
+            <th>Grade</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+            <td colspan="5" style="text-align:center;">No data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="input-row">
-    <label>Subject:</label>
-    <input id="subject-name" type="text">
-  </div>
+  <script>
+    /* ===== validateScore: true ถ้าเป็นตัวเลข 0-100 (ไม่ว่าง) ===== */
+    function validateScore(score) {
+      if (score === "" || score === null || typeof score === "undefined") return false; // ห้ามว่าง
+      const n = Number(score); // แปลงเป็นตัวเลข
+      if (isNaN(n)) return false; // ห้าม NaN / ตัวอักษร
+      return n >= 0 && n <= 100; // ต้องอยู่ในช่วง 0-100
+    }
 
-  <div class="input-row">
-    <label>Midterm (20%):</label>
-    <input id="midterm-score" type="text">
-  </div>
+    /* ===== calculateScore: สูตร (Mid*0.2 + Final*0.5 + Assignment*0.3) ===== */
+    function calculateScore(midterm, final, assignment) {
+      return (Number(midterm) * 0.2) + (Number(final) * 0.5) + (Number(assignment) * 0.3);
+    }
 
-  <div class="input-row">
-    <label>Final (50%):</label>
-    <input id="final-score" type="text">
-  </div>
+    /* ===== getGrade: คืน A-F ===== */
+    function getGrade(score) {
+      if (score >= 80) return "A";
+      if (score >= 70) return "B";
+      if (score >= 60) return "C";
+      if (score >= 50) return "D";
+      return "F";
+    }
 
-  <div class="input-row">
-    <label>Assignment (30%):</label>
-    <input id="assignment-score" type="text">
-  </div>
+    /* ===== getStatus: ถ้า F => FAIL else PASS ===== */
+    function getStatus(grade) {
+      return grade === "F" ? "FAIL" : "PASS";
+    }
 
-  <!-- Buttons -->
-  <div class="button-group">
-    <button id="btn-calculate">Calculate Grade</button>
-    <button id="btn-clear">Clear</button>
-  </div>
+    /* ===== saveToStorage: เก็บ array ของ object ใน localStorage ===== */
+    function saveToStorage(data) {
+      const key = "studentData";
+      const raw = localStorage.getItem(key);
+      const list = raw ? JSON.parse(raw) : [];
+      list.push(data);
+      localStorage.setItem(key, JSON.stringify(list));
+    }
 
-  <!-- Result Section -->
-  <div id="result-container">
-    <p>Total Score: <span id="total-score">0</span></p>
-    <p>Final Grade: <span id="final-grade">-</span></p>
-    <p>Status: <span id="pass-status">-</span></p>
-  </div>
+    /* ===== loadFromStorage: คืน array หรือ null ===== */
+    function loadFromStorage() {
+      const raw = localStorage.getItem("studentData");
+      return raw ? JSON.parse(raw) : null;
+    }
 
-  <!-- Grade History -->
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Subject</th>
-        <th>Total Score</th>
-        <th>Grade</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="history-body">
-      <tr><td colspan="5">No data.</td></tr>
-    </tbody>
-  </table>
+    /* ===== updateHistoryTable: แสดงข้อมูลในตาราง ===== */
+    function updateHistoryTable() {
+      const tbody = document.getElementById("table-body");
+      const data = loadFromStorage();
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data.</td></tr>';
+        return;
+      }
+      // สร้างแถวจากข้อมูล (เรียงตามที่บันทึก)
+      tbody.innerHTML = data.map(item => `
+        <tr>
+          <td>${escapeHtml(item.name)}</td>
+          <td>${escapeHtml(item.subject)}</td>
+          <td>${Number(item.score).toFixed(2)}</td>
+          <td>${item.grade}</td>
+          <td>${item.status}</td>
+        </tr>
+      `).join("");
+    }
 
-</div>
+    /* เล็กน้อย: ป้องกันการแสดง HTML ที่ผู้ใช้พิมพ์เข้ามา */
+    function escapeHtml(text) {
+      if (typeof text !== "string") return text;
+      return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
 
-<script>
-/* ---------- ตรวจสอบคะแนน ---------- */
-function validateScore(score) {
-  if (score === "") return false;               // ห้ามว่าง
-  let num = Number(score);                      // แปลงเป็นตัวเลข
-  if (isNaN(num)) return false;                 // ห้าม NaN
-  return num >= 0 && num <= 100;                // ต้องอยู่ 0-100
-}
+    /* ===== handleCalculate: หลักการตามโจทย์ ===== */
+    function handleCalculate() {
+      const name = document.getElementById("student-name").value.trim();
+      const subject = document.getElementById("subject-name").value.trim();
+      const mid = document.getElementById("midterm-score").value;
+      const fin = document.getElementById("final-score").value;
+      const ass = document.getElementById("assignment-score").value;
 
-/* ---------- คำนวณคะแนนรวม ---------- */
-function calculateScore(midterm, final, assignment) {
-  return (midterm * 0.2) + (final * 0.5) + (assignment * 0.3);
-}
+      // ตรวจชื่อและรายวิชาไม่ให้ว่าง
+      if (!name || !subject) {
+        alert("Please enter student name and subject");
+        return;
+      }
 
-/* ---------- แปลงเป็นเกรด ---------- */
-function getGrade(score) {
-  if (score >= 80) return "A";
-  if (score >= 70) return "B";
-  if (score >= 60) return "C";
-  if (score >= 50) return "D";
-  return "F";
-}
+      // ตรวจว่าเป็นตัวเลขและไม่ว่าง
+      if (!validateScore(mid) || !validateScore(fin) || !validateScore(ass)) {
+        // ถ้าผ่าน validateScore แล้ว แต่เป็นตัวอักษร will be rejected
+        alert("All scores must be between 0-100");
+        return;
+      }
 
-/* ---------- PASS / FAIL ---------- */
-function getStatus(grade) {
-  return grade === "F" ? "FAIL" : "PASS";
-}
+      // คำนวณคะแนนรวม
+      const total = calculateScore(mid, fin, ass);
+      const grade = getGrade(total);
+      const status = getStatus(grade);
 
-/* ---------- บันทึก localStorage ---------- */
-function saveToStorage(data) {
-  let stored = JSON.parse(localStorage.getItem("studentData")) || [];
-  stored.push(data);
-  localStorage.setItem("studentData", JSON.stringify(stored));
-}
+      // แสดงผลใน Result Section (ซ่อน->แสดง)
+      document.getElementById("total-score").textContent = total.toFixed(2);
+      document.getElementById("final-grade").textContent = grade;
+      document.getElementById("pass-status").textContent = status;
+      document.getElementById("result-container").style.display = "block";
 
-/* ---------- โหลด localStorage ---------- */
-function loadFromStorage() {
-  let data = localStorage.getItem("studentData");
-  return data ? JSON.parse(data) : null;
-}
+      // เตรียมข้อมูลและบันทึกลง localStorage
+      const record = {
+        name: name,
+        subject: subject,
+        midterm: Number(mid),
+        final: Number(fin),
+        assignment: Number(ass),
+        score: total,
+        grade: grade,
+        status: status
+      };
 
-/* ---------- แสดงตาราง ---------- */
-function renderTable(data) {
-  const body = document.getElementById("history-body");
-  body.innerHTML = "";
-  data.forEach(d => {
-    body.innerHTML += `
-      <tr>
-        <td>${d.name}</td>
-        <td>${d.subject}</td>
-        <td>${d.score.toFixed(2)}</td>
-        <td>${d.grade}</td>
-        <td>${d.status}</td>
-      </tr>`;
-  });
-}
+      saveToStorage(record);
+      updateHistoryTable();
+    }
 
-/* ---------- Calculate ---------- */
-function handleCalculate() {
-  const name = document.getElementById("student-name").value.trim();
-  const subject = document.getElementById("subject-name").value.trim();
-  const mid = document.getElementById("midterm-score").value;
-  const fin = document.getElementById("final-score").value;
-  const ass = document.getElementById("assignment-score").value;
+    /* ===== handleClear: เคลียร์ input และซ่อน result ===== */
+    function handleClear() {
+      document.getElementById("student-name").value = "";
+      document.getElementById("subject-name").value = "";
+      document.getElementById("midterm-score").value = "";
+      document.getElementById("final-score").value = "";
+      document.getElementById("assignment-score").value = "";
+      document.getElementById("result-container").style.display = "none";
+    }
 
-  if (!name || !subject) {
-    alert("Please enter student name and subject");
-    return;
-  }
+    // หน้าโหลด: ผูก event และแสดง history
+    window.addEventListener("DOMContentLoaded", () => {
+      // กำหนด event listener ให้ปุ่ม (ตามโจทย์: ใช้ addEventListener)
+      document.getElementById("btn-calculate").addEventListener("click", handleCalculate);
+      document.getElementById("btn-clear").addEventListener("click", handleClear);
 
-  if (!validateScore(mid) || !validateScore(fin) || !validateScore(ass)) {
-    alert("All scores must be between 0-100");
-    return;
-  }
-
-  const total = calculateScore(Number(mid), Number(fin), Number(ass));
-  const grade = getGrade(total);
-  const status = getStatus(grade);
-
-  document.getElementById("total-score").textContent = total.toFixed(2);
-  document.getElementById("final-grade").textContent = grade;
-  document.getElementById("pass-status").textContent = status;
-  document.getElementById("result-container").style.display = "block";
-
-  const data = {
-    name, subject,
-    midterm: Number(mid),
-    final: Number(fin),
-    assignment: Number(ass),
-    score: total,
-    grade, status
-  };
-
-  saveToStorage(data);
-  renderTable(loadFromStorage());
-}
-
-/* ---------- Clear ---------- */
-function handleClear() {
-  document.getElementById("student-name").value = "";
-  document.getElementById("subject-name").value = "";
-  document.getElementById("midterm-score").value = "";
-  document.getElementById("final-score").value = "";
-  document.getElementById("assignment-score").value = "";
-  document.getElementById("result-container").style.display = "none";
-}
-
-/* ---------- Page Load ---------- */
-window.addEventListener("DOMContentLoaded", () => {
-  const data = loadFromStorage();
-  if (data) renderTable(data);
-});
-
-/* ---------- Event Listener ---------- */
-document.getElementById("btn-calculate").addEventListener("click", handleCalculate);
-document.getElementById("btn-clear").addEventListener("click", handleClear);
-</script>
-
+      // โหลดข้อมูลเก่าและแสดงในตาราง
+      updateHistoryTable();
+    });
+  </script>
 </body>
 </html>
