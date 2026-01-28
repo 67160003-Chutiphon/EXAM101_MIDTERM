@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Grade System</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h3>🎓 STUDENT GRADE SYSTEM</h3>
+
+      <div class="row">
+        <label>Student Name:</label>
+        <input type="text" id="student-name" />
+      </div>
+
+      <div class="row">
+        <label>Subject:</label>
+        <input type="text" id="subject-name" />
+      </div>
+
+      <p><strong>Scores (out of 100):</strong></p>
+
+      <!-- Tree Structure Wrapper -->
+      <div class="scores-area">
+        <div class="score-item">
+          <label>Midterm (20%): </label> &nbsp;
+          <input type="text" id="midterm-score" /> /100
+        </div>
+
+        <div class="score-item">
+          <label>Final (50%): </label> &nbsp;
+          <input type="text" id="final-score" /> /100
+        </div>
+
+        <div class="score-item">
+          <label>Assignment (30%): </label> &nbsp;
+          <input type="text" id="assignment-score" /> /100
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-calculate">📊 Calculate</button>
+        <button id="btn-clear">🗑️ Clear All</button>
+      </div>
+
+      <!-- Result Section (hidden by default) -->
+      <div id="result-container" style="display: none;">
+        <p><strong>✔ LATEST RESULT</strong></p>
+        <p>Total Score: <span id="total-score">0</span></p>
+        <p>Final Grade: <span id="final-grade">-</span></p>
+        <p>Status: <span id="pass-status">-</span></p>
+      </div>
+
+      <!-- Previous Results Table -->
+      <div id="history-section">
+        <h4>📋 Grade History</h4>
+        <table id="results-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Subject</th>
+              <th>Total Score</th>
+              <th>Grade</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="5" style="text-align: center;">No data.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
